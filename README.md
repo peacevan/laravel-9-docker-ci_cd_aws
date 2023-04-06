@@ -68,7 +68,7 @@ Devem estender a classe **app/Http/Services/Service.php**
 
 2.3 Diretorio de Entities fica em:
 ``` 
-app/Entity
+app/Models
 ``` 
 
 OBS: destinada às classes de entidades da aplicação. <br>
