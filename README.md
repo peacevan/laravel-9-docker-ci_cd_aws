@@ -136,7 +136,7 @@ Alguns comandos via artisan pode ser usado para criar.
 OBS: O endpoint para consulta é **http://127.0.0.1/graphql**
 
 <h1>Redis</h1>
-1. O Redis é um armazenamento de estrutura de dados de chave-valor de código aberto e na memória. <br>
+O Redis é um banco de dados em memória rápido e flexível, que é capaz de armazenar e manipular uma variedade de estruturas de dados. Ele é frequentemente usado como um cache de dados e sistema de mensagens, e pode ser configurado em um cluster para suportar cargas de trabalho de alta disponibilidade e alta escala. <br>
 1.1 Uso do Redis é para finalizade colocar alguma consulta em cache, mas é opcional como default está habilitado o uso Memcached
 
 1.2 Para cachear alguma query deve dar o use da dependency
