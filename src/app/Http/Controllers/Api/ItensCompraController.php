@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Models\Item;
-use App\Models\Order;
+use App\Models\ItensCompra;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderCollection;
+use App\Http\Resources\ItensCompraCollection;
 
-class OrderController extends Controller
+class ItensCompraController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,7 +22,7 @@ class OrderController extends Controller
     {
         $uid = auth()->id();
 
-        return new OrderCollection(Order::where('user_id', '=', $uid)->get());
+        return new ItensCompraCollection(ItensCompra::where('user_id', '=', $uid)->get());
     }
 
     /**
@@ -33,8 +33,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $data = $this->validate($request, [
             'name' => 'required|min:2|max:100',
             'item_id' => 'required|exists:items,uuid,deleted_at,NULL',
@@ -67,7 +65,7 @@ class OrderController extends Controller
 
     protected function connection()
     {
-        return new Order();
+        return new ItensCompra();
     }
 
     /**
@@ -78,14 +76,14 @@ class OrderController extends Controller
      */
     public function show($uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
+        $ItensCompra = $this->getOrderByUuid($uuid);
 
-        if (!$order) {
+        if (!$ItensCompra) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
         return response()->json([
-            "data" => Order::with(['item' => fn($query) => $query->with('category')])->find($order->id)
+            "data" => ItensCompra::with(['item' => fn($query) => $query->with('category')])->find($ItensCompra->id)
         ]);
     }
 

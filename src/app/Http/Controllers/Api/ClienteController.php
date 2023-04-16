@@ -4,25 +4,26 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Models\Item;
-use App\Models\Order;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderCollection;
+use App\Http\Resources\ClienteCollection;
 
-class OrderController extends Controller
+class ClienteController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return OrderCollection
+     * @return ClienteCollection
      */
     public function index()
     {
         $uid = auth()->id();
 
-        return new OrderCollection(Order::where('user_id', '=', $uid)->get());
+        //return new ClienteCollection(Cliente::where('id_cliente', '=', $uid)->get());
+        return new ClienteCollection(Cliente::where('id_cliente', '=', 1)->get());
     }
 
     /**
@@ -33,8 +34,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $data = $this->validate($request, [
             'name' => 'required|min:2|max:100',
             'item_id' => 'required|exists:items,uuid,deleted_at,NULL',
@@ -57,7 +56,7 @@ class OrderController extends Controller
             return $this->msgResponse($exception->getMessage(), 500);
         }
 
-        return $this->msgResponse("Order created.");
+        return $this->msgResponse("Cliente created.");
     }
 
     protected function getItemByUuid($uuid)
@@ -67,7 +66,7 @@ class OrderController extends Controller
 
     protected function connection()
     {
-        return new Order();
+        return new Cliente();
     }
 
     /**
@@ -78,18 +77,18 @@ class OrderController extends Controller
      */
     public function show($uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
+        $Cliente = $this->getClienteByUuid($uuid);
 
-        if (!$order) {
+        if (!$Cliente) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
         return response()->json([
-            "data" => Order::with(['item' => fn($query) => $query->with('category')])->find($order->id)
+            "data" => Cliente::with(['item' => fn($query) => $query->with('category')])->find($Cliente->id)
         ]);
     }
 
-    protected function getOrderByUuid($uuid)
+    protected function getClienteByUuid($uuid)
     {
         return $this->connection()->where('uuid', $uuid)->first();
     }
@@ -103,9 +102,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, $uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
+        $Cliente = $this->getClienteByUuid($uuid);
 
-        if (!$order) {
+        if (!$Cliente) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
@@ -122,7 +121,7 @@ class OrderController extends Controller
 
             DB::beginTransaction();
 
-            $this->connection()->where('id', $order->id)->update($data);
+            $this->connection()->where('id', $Cliente->id)->update($data);
 
             DB::commit();
 
@@ -132,7 +131,7 @@ class OrderController extends Controller
             return $this->msgResponse($exception->getMessage(), 500);
         }
 
-        return $this->msgResponse("Order updated.");
+        return $this->msgResponse("Cliente updated.");
     }
 
     /**
@@ -143,9 +142,9 @@ class OrderController extends Controller
      */
     public function destroy($uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
+        $Cliente = $this->getClienteByUuid($uuid);
 
-        if (!$order) {
+        if (!$Cliente) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
@@ -153,7 +152,7 @@ class OrderController extends Controller
 
             DB::beginTransaction();
 
-            $this->connection()->where('id', $order->id)->delete();
+            $this->connection()->where('id', $Cliente->id)->delete();
 
             DB::commit();
 
@@ -163,6 +162,6 @@ class OrderController extends Controller
             return $this->msgResponse($exception->getMessage(), 500);
         }
 
-        return $this->msgResponse("Order deleted.");
+        return $this->msgResponse("Cliente deleted.");
     }
 }

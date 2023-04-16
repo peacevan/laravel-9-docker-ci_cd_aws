@@ -4,25 +4,25 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Models\Item;
-use App\Models\Order;
+use App\Models\Compra;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderCollection;
+use App\Http\Resources\CompraCollection;
 
-class OrderController extends Controller
+class CompraController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return OrderCollection
+     * @return CompraCollection
      */
-    public function index()
+    public function index(Request $reaquest)
     {
         $uid = auth()->id();
-
-        return new OrderCollection(Order::where('user_id', '=', $uid)->get());
+       // return new CompraCollection(Compra::where('user_id', '=', $uid)->get());
+       return new CompraCollection(Compra::where('id_cliente',"=",$reaquest)->get());
     }
 
     /**
@@ -33,8 +33,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $data = $this->validate($request, [
             'name' => 'required|min:2|max:100',
             'item_id' => 'required|exists:items,uuid,deleted_at,NULL',
@@ -53,7 +51,6 @@ class OrderController extends Controller
 
         } catch (Exception $exception) {
             DB::rollBack();
-
             return $this->msgResponse($exception->getMessage(), 500);
         }
 
@@ -67,7 +64,7 @@ class OrderController extends Controller
 
     protected function connection()
     {
-        return new Order();
+        return new Compra();
     }
 
     /**
@@ -78,14 +75,14 @@ class OrderController extends Controller
      */
     public function show($uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
+        $Compra = $this->getOrderByUuid($uuid);
 
-        if (!$order) {
+        if (!$Compra) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
         return response()->json([
-            "data" => Order::with(['item' => fn($query) => $query->with('category')])->find($order->id)
+            "data" => Compra::with(['item' => fn($query) => $query->with('category')])->find($Compra->id)
         ]);
     }
 

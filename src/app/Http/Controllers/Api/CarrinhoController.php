@@ -3,26 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use Exception;
-use App\Models\Item;
-use App\Models\Order;
+use App\Models\ItensCompra;
+use App\Models\Carrinho;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderCollection;
+use App\Http\Resources\CarrinhoCollection;
 
-class OrderController extends Controller
+class CarrinhoController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return OrderCollection
+     * @return CarrinhoCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $uid = auth()->id();
 
-        return new OrderCollection(Order::where('user_id', '=', $uid)->get());
+        $id_cliente=1 ;
+        // $request['data']['id_cliente']=1;
+
+      // $uid = auth()->id();
+     //return new CarrinhoCollection(Carrinho::where('user_id', '=', $uid)->get());
+       return new CarrinhoCollection(Carrinho::where('id_cliente', '=', $id_cliente)->get());
     }
 
     /**
@@ -33,23 +37,25 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $data = $this->validate($request, [
-            'name' => 'required|min:2|max:100',
-            'item_id' => 'required|exists:items,uuid,deleted_at,NULL',
+            'nome_produto' => 'required|min:2|max:100',
+           // 'item_id' => 'required|exists:items,uuid,deleted_at,NULL',
         ]);
-
-        $data['user_id'] = auth('api')->id();
-        $data['item_id'] = $this->getItemByUuid($data['item_id'])?->id;
+        $data["nome_produto"] ='teste';
+       // var_dump($request->all());
+      // die('aqui');
+        //$data['user_id'] = auth('api')->id();
+       // $data['item_id'] = $this->getItemByUuid($data['item_id'])?->id;
+      // return   $data ;
+       // die('aqui');
 
         try {
 
-            DB::beginTransaction();
+          DB::beginTransaction();
 
-            $this->connection()->create($data);
+            $this->connection()::create($data);
 
-            DB::commit();
+          DB::commit();
 
         } catch (Exception $exception) {
             DB::rollBack();
@@ -57,17 +63,18 @@ class OrderController extends Controller
             return $this->msgResponse($exception->getMessage(), 500);
         }
 
-        return $this->msgResponse("Order created.");
+        return $this->msgResponse("Item Adicionado no carrinho.");
     }
 
     protected function getItemByUuid($uuid)
     {
-        return Item::where('uuid', $uuid)->first();
+
+        //  return Item::where('uuid', $uuid)->first();
     }
 
     protected function connection()
     {
-        return new Order();
+        return new Carrinho();
     }
 
     /**
@@ -78,20 +85,22 @@ class OrderController extends Controller
      */
     public function show($uuid)
     {
-        $order = $this->getOrderByUuid($uuid);
 
-        if (!$order) {
+        $carrinho= $this->getOrderByUuid($uuid);
+
+        if (!$carrinho) {
             return $this->msgResponse("You requested ID: $uuid not found.", 404);
         }
 
         return response()->json([
-            "data" => Order::with(['item' => fn($query) => $query->with('category')])->find($order->id)
+            "data" => Carrinho::with(['cliente'])->find($carrinho->id_carrinho)
         ]);
     }
 
     protected function getOrderByUuid($uuid)
     {
-        return $this->connection()->where('uuid', $uuid)->first();
+
+        return $this->connection()->where('id_cliente', $uuid)->first();
     }
 
     /**
@@ -115,7 +124,7 @@ class OrderController extends Controller
         ]);
 
         if (!empty($data['item_id'])) {
-            $data['item_id'] = $this->getItemByUuid($data['item_id'])?->id;
+           // $data['item_id'] = $this->getItemByUuid($data['item_id'])?->id;
         }
 
         try {
