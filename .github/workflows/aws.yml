@@ -22,7 +22,7 @@ jobs:
 
      
     - name: Deploy to EC2
-      working-directory: ./var/www/html/laravel-9-docker-crud-generation
+     # working-directory: ./var/www/html/laravel-9-docker-crud-generation
       run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} 
          
