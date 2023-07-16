@@ -20,11 +20,9 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
-  
-
+     
     - name: Deploy to EC2
       run: |
-          ssh -o StrictHostKeyChecking=no -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") ubuntur@${{ secrets.EC2_PUBLIC_IP }}
           cd /var/www/html/project_dir
           git pull origin main
           php artisan migrate --force
