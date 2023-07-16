@@ -23,7 +23,7 @@ jobs:
      
     - name: Deploy to EC2
       run: |
-          cd /var/www/html/project_dir
+          cd var/www/html/project_dir
           git pull origin main
           php artisan migrate --force
           php artisan config:cache
