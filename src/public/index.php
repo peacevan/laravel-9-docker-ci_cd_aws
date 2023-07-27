@@ -1,6 +1,5 @@
 <?php
-
-die('ola mundo');
+die('ola mundo teste pipeline');
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
