@@ -1,5 +1,5 @@
 <?php
-die('ola mundo teste pipeline');
+die('teste ci/cd');
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
