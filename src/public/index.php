@@ -1,6 +1,5 @@
 <?php
-
-die('ola mundo');
+die('teste ci/cd');
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
